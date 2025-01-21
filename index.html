@@ -35,10 +35,9 @@
         }
         .layout {
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            flex-direction: column;
+            align-items: center;
             gap: 20px;
-            flex-wrap: wrap;
         }
         .card {
             width: 400px;
@@ -50,6 +49,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
         }
         .grid {
             display: grid;
@@ -108,17 +108,15 @@
             align-items: center;
         }
         .result {
-            margin-top: 20px;
-            padding: 20px;
-            background: #fff;
-            color: #4CAF50;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: #fff;
             font-size: 18px;
             font-weight: bold;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .hidden-result {
-            display: none;
+            display: none; /* Cacher le résultat au départ */
         }
     </style>
 </head>
@@ -128,9 +126,15 @@
     <!-- Section pour la carte -->
     <div class="card-container">
         <div class="layout">
+            <!-- Résultat affiché en haut de la carte -->
+            <div class="result" id="result"></div>
+
+            <!-- La carte blanche -->
             <div class="card">
                 <div id="grid" class="grid"></div>
             </div>
+
+            <!-- Instructions à droite -->
             <div class="instructions">
                 <p>✈️ x3 = Un voyage</p>
                 <p>🍽️ x3 = Un resto</p>
@@ -138,7 +142,6 @@
                 <p>🎬 x3 = Une soirée Netflix</p>
             </div>
         </div>
-        <div class="result hidden-result" id="result"></div>
     </div>
 
     <script>
@@ -192,12 +195,12 @@
 
         function displayResult() {
             const resultContainer = document.getElementById("result");
-            resultContainer.classList.remove("hidden-result");
+            resultContainer.style.display = "block";
 
             // Trouver le gagnant
             const winner = Object.entries(rewardCounts).find(([reward, count]) => count === 3);
             if (winner) {
-                resultContainer.textContent = `🎉 Le gagnant est : ${winner[0]} avec ${winner[1]} occurrences !`;
+                resultContainer.textContent = `🎉 Le gagnant est : ${winner[0]} !`;
             } else {
                 resultContainer.textContent = "Aucun gagnant trouvé. Essayez une nouvelle carte !";
             }
