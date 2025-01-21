@@ -35,7 +35,7 @@
         }
         .layout {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: flex-start;
             gap: 20px;
             flex-wrap: wrap;
@@ -94,7 +94,7 @@
             background: gold;
             z-index: 2;
         }
-        .instructions, .result {
+        .instructions {
             background-color: #fdd835;
             padding: 20px;
             border-radius: 15px;
@@ -108,35 +108,18 @@
             align-items: center;
         }
         .result {
-            margin-top: 20px;
             background-color: #4caf50;
             color: #fff;
-            display: none;
-        }
-        .form-container label {
-            display: block;
-            margin: 10px 0 5px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 18px;
             font-weight: bold;
+            min-width: 200px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        .form-container input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-        .form-container button {
-            padding: 10px 20px;
-            background-color: #d32f2f;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .form-container button:hover {
-            background-color: #b71c1c;
+        .result.hidden {
+            display: none;
         }
     </style>
 </head>
@@ -163,8 +146,10 @@
             <div class="card">
                 <div id="grid" class="grid"></div>
             </div>
-            <div class="instructions" id="instructions"></div>
-            <div class="result" id="result"></div>
+            <div>
+                <div class="instructions" id="instructions"></div>
+                <div class="result hidden" id="result"></div>
+            </div>
         </div>
     </div>
 
@@ -253,12 +238,12 @@
 
         function displayResult() {
             const resultContainer = document.getElementById("result");
-            resultContainer.style.display = "block";
+            resultContainer.classList.remove("hidden");
 
             // Trouver le gagnant
             const winner = Object.entries(rewardCounts).find(([reward, count]) => count === 3);
             if (winner) {
-                resultContainer.textContent = `🎉 Le gagnant est : ${winner[0]} (${winner[1]} occurrences) !`;
+                resultContainer.textContent = `🎉 Le gagnant est : ${winner[0]} !`;
             } else {
                 resultContainer.textContent = "Aucun gagnant trouvé. Essayez une nouvelle carte !";
             }
