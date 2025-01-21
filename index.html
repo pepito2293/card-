@@ -33,39 +33,11 @@
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        .form-container h3, .card-container h3 {
-            margin-bottom: 10px;
-        }
-        .form-container label {
-            display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
-        }
-        .form-container input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-        .form-container button {
-            padding: 10px 20px;
-            background-color: #d32f2f;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .form-container button:hover {
-            background-color: #b71c1c;
-        }
         .layout {
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 40px;
+            align-items: flex-start;
+            gap: 20px;
             flex-wrap: wrap;
         }
         .card {
@@ -135,65 +107,51 @@
             justify-content: center;
             align-items: center;
         }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff;
+            color: #4CAF50;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .hidden-result {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="title">Personnalisez votre carte à gratter</div>
-    
-    <!-- Formulaire pour les légendes -->
-    <div class="form-container" id="formContainer">
-        <h3>Entrez vos légendes :</h3>
-        <label for="legend-plane">✈️ Légende pour "Avion" :</label>
-        <input type="text" id="legend-plane" placeholder="Ex : Un voyage inoubliable">
-        <label for="legend-restaurant">🍽️ Légende pour "Resto" :</label>
-        <input type="text" id="legend-restaurant" placeholder="Ex : Un dîner romantique">
-        <label for="legend-massage">💆 Légende pour "Massage" :</label>
-        <input type="text" id="legend-massage" placeholder="Ex : Une séance détente">
-        <label for="legend-movie">🎬 Légende pour "Soirée Netflix" :</label>
-        <input type="text" id="legend-movie" placeholder="Ex : Une soirée cosy">
-        <button onclick="generateCard()">Afficher la carte</button>
-    </div>
+    <div class="title">Carte à gratter interactive</div>
     
     <!-- Section pour la carte -->
-    <div class="card-container" id="cardContainer" style="display: none;">
+    <div class="card-container">
         <div class="layout">
             <div class="card">
                 <div id="grid" class="grid"></div>
             </div>
-            <div class="instructions" id="instructions"></div>
+            <div class="instructions">
+                <p>✈️ x3 = Un voyage</p>
+                <p>🍽️ x3 = Un resto</p>
+                <p>💆 x3 = Un massage</p>
+                <p>🎬 x3 = Une soirée Netflix</p>
+            </div>
         </div>
+        <div class="result hidden-result" id="result"></div>
     </div>
 
     <script>
         const rewards = ["✈️", "🍽️", "💆", "🎬"]; // Les smileys possibles
+        let revealedCards = 0; // Compte des cases grattées
+        let rewardCounts = {}; // Compte des récompenses visibles
 
-        function generateCard() {
-            // Récupérer les légendes depuis le formulaire
-            const legendPlane = document.getElementById("legend-plane").value || "Un voyage";
-            const legendRestaurant = document.getElementById("legend-restaurant").value || "Un resto";
-            const legendMassage = document.getElementById("legend-massage").value || "Un massage";
-            const legendMovie = document.getElementById("legend-movie").value || "Une soirée Netflix";
-
-            // Mettre à jour les légendes
-            const legends = {
-                "✈️": legendPlane,
-                "🍽️": legendRestaurant,
-                "💆": legendMassage,
-                "🎬": legendMovie
-            };
-
-            // Afficher la carte
-            document.getElementById("formContainer").style.display = "none";
-            document.getElementById("cardContainer").style.display = "block";
-
-            // Générer les cases et la légende
-            generateGrid();
-            generateLegend(legends);
-        }
-
-        function generateGrid() {
+        function generateRandomRewards() {
             const grid = document.getElementById("grid");
-            grid.innerHTML = ""; // Réinitialiser la grille
+            grid.innerHTML = ""; // Réinitialise la grille
+            revealedCards = 0;
+            rewardCounts = {};
+
             const rewardPool = createRandomRewardPool();
             rewardPool.forEach((reward) => {
                 const scratchCard = document.createElement("div");
@@ -202,7 +160,7 @@
                     <div class="hidden"></div>
                     <div class="content">${reward}</div>
                 `;
-                scratchCard.addEventListener("click", () => scratchCardReveal(scratchCard));
+                scratchCard.addEventListener("click", () => scratchCardReveal(scratchCard, reward));
                 grid.appendChild(scratchCard);
             });
         }
@@ -215,21 +173,34 @@
             return shuffleArray(rewardPool); // Mélanger
         }
 
-        function generateLegend(legends) {
-            const instructions = document.getElementById("instructions");
-            instructions.innerHTML = ""; // Réinitialiser les légendes
-            rewards.forEach((reward) => {
-                const legendText = document.createElement("p");
-                legendText.innerHTML = `${reward} x3 = ${legends[reward]}`;
-                instructions.appendChild(legendText);
-            });
+        function scratchCardReveal(card, reward) {
+            const hiddenLayer = card.querySelector(".hidden");
+            if (hiddenLayer) {
+                hiddenLayer.style.transition = "opacity 0.5s";
+                hiddenLayer.style.opacity = 0;
+                setTimeout(() => hiddenLayer.remove(), 500);
+
+                revealedCards++;
+                rewardCounts[reward] = (rewardCounts[reward] || 0) + 1;
+
+                // Vérifier si toutes les cases sont grattées
+                if (revealedCards === 9) {
+                    displayResult();
+                }
+            }
         }
 
-        function scratchCardReveal(card) {
-            const hiddenLayer = card.querySelector(".hidden");
-            hiddenLayer.style.transition = "opacity 0.5s";
-            hiddenLayer.style.opacity = 0;
-            setTimeout(() => hiddenLayer.remove(), 500);
+        function displayResult() {
+            const resultContainer = document.getElementById("result");
+            resultContainer.classList.remove("hidden-result");
+
+            // Trouver le gagnant
+            const winner = Object.entries(rewardCounts).find(([reward, count]) => count === 3);
+            if (winner) {
+                resultContainer.textContent = `🎉 Le gagnant est : ${winner[0]} avec ${winner[1]} occurrences !`;
+            } else {
+                resultContainer.textContent = "Aucun gagnant trouvé. Essayez une nouvelle carte !";
+            }
         }
 
         function shuffleArray(array) {
@@ -239,6 +210,9 @@
             }
             return array;
         }
+
+        // Générer une nouvelle combinaison au chargement de la page
+        window.onload = generateRandomRewards;
     </script>
 </body>
 </html>
