@@ -8,62 +8,57 @@
     <style>
         body {
             font-family: Calibri, Arial, sans-serif;
+            text-align: center;
             margin: 0;
             padding: 0;
-            height: 100vh; /* Toute la hauteur de la fenêtre */
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background-color: #f8d5e2;
         }
-        .container {
-            width: 95%;
-            height: 95%;
+        .title {
+            font-size: 50px;
+            color: #d32f2f;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .form-container, .card-container {
+            width: 90%;
             max-width: 600px;
-            max-height: 700px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
+            margin: 20px auto;
             background: #fff;
-            padding: 10px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        .title {
-            font-size: 4vh; /* Ajuste le titre pour tenir dans la page */
-            color: #d32f2f;
-            margin: 0;
-            text-align: center;
-            font-weight: bold;
-        }
-        .result {
-            width: 90%;
-            padding: 10px;
-            background: #4CAF50;
-            color: #fff;
-            font-size: 2.5vh;
-            font-weight: bold;
-            border-radius: 10px;
-            text-align: center;
-            display: none; /* Cacher le résultat par défaut */
+        .layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
         }
         .card {
-            flex: 1; /* Prend l'espace restant pour les cases */
+            width: 400px;
+            height: 400px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;
-            padding: 10px;
+            flex-direction: column;
         }
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 5px;
-            width: 100%;
-            aspect-ratio: 1; /* La grille reste carrée */
+            gap: 20px;
         }
         .scratch-card {
+            width: 100px;
+            height: 100px;
             background-color: gold;
             border-radius: 10px;
             position: relative;
@@ -71,7 +66,6 @@
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            aspect-ratio: 1; /* Chaque case reste carrée */
         }
         .scratch-card:hover {
             transform: scale(1.1);
@@ -86,7 +80,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5vh;
+            font-size: 36px;
             font-weight: bold;
             color: #fff;
             z-index: 1;
@@ -101,35 +95,61 @@
             z-index: 2;
         }
         .instructions {
-            padding: 10px;
             background-color: #fdd835;
+            padding: 20px;
             border-radius: 15px;
             text-align: left;
-            font-size: 2vh;
+            width: 250px;
+            font-size: 16px;
             font-weight: bold;
-            width: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .result {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none; /* Cacher le résultat au départ */
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="title">Carte à gratter interactive</div>
-        
-        <!-- Résultat affiché en haut de la carte -->
-        <div class="result" id="result"></div>
+    <div class="title">Carte à gratter interactive</div>
+    
+    <!-- Formulaire pour pré-sélection des éléments -->
+    <div class="form-container" id="formContainer">
+        <h3>Personnalisez les légendes :</h3>
+        <label for="legend-plane">✈️ Légende pour "Avion" :</label>
+        <input type="text" id="legend-plane" placeholder="Ex : Un voyage inoubliable">
+        <label for="legend-restaurant">🍽️ Légende pour "Resto" :</label>
+        <input type="text" id="legend-restaurant" placeholder="Ex : Un dîner romantique">
+        <label for="legend-massage">💆 Légende pour "Massage" :</label>
+        <input type="text" id="legend-massage" placeholder="Ex : Une séance détente">
+        <label for="legend-movie">🎬 Légende pour "Soirée Netflix" :</label>
+        <input type="text" id="legend-movie" placeholder="Ex : Une soirée cosy">
+        <button onclick="generateCard()">Afficher la carte</button>
+    </div>
+    
+    <!-- Section pour la carte -->
+    <div class="card-container" id="cardContainer" style="display: none;">
+        <div class="layout">
+            <!-- Résultat affiché en haut de la carte -->
+            <div class="result" id="result"></div>
 
-        <!-- La carte blanche -->
-        <div class="card">
-            <div id="grid" class="grid"></div>
-        </div>
+            <!-- La carte blanche -->
+            <div class="card">
+                <div id="grid" class="grid"></div>
+            </div>
 
-        <!-- Instructions en bas -->
-        <div class="instructions">
-            <p>✈️ x3 = Un voyage</p>
-            <p>🍽️ x3 = Un resto</p>
-            <p>💆 x3 = Un massage</p>
-            <p>🎬 x3 = Une soirée Netflix</p>
+            <!-- Instructions à droite -->
+            <div class="instructions" id="instructions"></div>
         </div>
     </div>
 
@@ -138,9 +158,33 @@
         let revealedCards = 0; // Compte des cases grattées
         let rewardCounts = {}; // Compte des récompenses visibles
 
-        function generateRandomRewards() {
+        function generateCard() {
+            // Récupérer les légendes depuis le formulaire
+            const legendPlane = document.getElementById("legend-plane").value || "Un voyage";
+            const legendRestaurant = document.getElementById("legend-restaurant").value || "Un resto";
+            const legendMassage = document.getElementById("legend-massage").value || "Un massage";
+            const legendMovie = document.getElementById("legend-movie").value || "Une soirée Netflix";
+
+            // Mettre à jour les légendes
+            const legends = {
+                "✈️": legendPlane,
+                "🍽️": legendRestaurant,
+                "💆": legendMassage,
+                "🎬": legendMovie
+            };
+
+            // Afficher la carte
+            document.getElementById("formContainer").style.display = "none";
+            document.getElementById("cardContainer").style.display = "block";
+
+            // Générer les cases et la légende
+            generateGrid();
+            generateLegend(legends);
+        }
+
+        function generateGrid() {
             const grid = document.getElementById("grid");
-            grid.innerHTML = ""; // Réinitialise la grille
+            grid.innerHTML = ""; // Réinitialiser la grille
             revealedCards = 0;
             rewardCounts = {};
 
@@ -154,6 +198,16 @@
                 `;
                 scratchCard.addEventListener("click", () => scratchCardReveal(scratchCard, reward));
                 grid.appendChild(scratchCard);
+            });
+        }
+
+        function generateLegend(legends) {
+            const instructions = document.getElementById("instructions");
+            instructions.innerHTML = ""; // Réinitialiser les légendes
+            rewards.forEach((reward) => {
+                const legendText = document.createElement("p");
+                legendText.innerHTML = `${reward} x3 = ${legends[reward]}`;
+                instructions.appendChild(legendText);
             });
         }
 
@@ -202,9 +256,6 @@
             }
             return array;
         }
-
-        // Générer une nouvelle combinaison au chargement de la page
-        window.onload = generateRandomRewards;
     </script>
 </body>
 </html>
