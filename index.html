@@ -10,68 +10,60 @@
             font-family: Calibri, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            height: 100vh; /* Assure que le contenu tient dans la hauteur de la fenêtre */
+            height: 100vh; /* Toute la hauteur de la fenêtre */
             display: flex;
             justify-content: center;
             align-items: center;
             background-color: #f8d5e2;
-            overflow: hidden; /* Évite tout défilement */
         }
         .container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: center;
-        }
-        .title {
-            font-size: 5vh; /* Taille du texte relative à la hauteur de la fenêtre */
-            color: #d32f2f;
-            margin: 0;
-            font-weight: bold;
-        }
-        .card-container {
-            width: 90%;
-            max-width: 800px;
-            height: 75%; /* La carte occupe 75% de la hauteur disponible */
+            width: 95%;
+            height: 95%;
+            max-width: 600px;
+            max-height: 700px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             background: #fff;
-            padding: 2%;
+            padding: 10px;
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+        .title {
+            font-size: 4vh; /* Ajuste le titre pour tenir dans la page */
+            color: #d32f2f;
+            margin: 0;
+            text-align: center;
+            font-weight: bold;
+        }
         .result {
-            padding: 10px 20px;
+            width: 90%;
+            padding: 10px;
             background: #4CAF50;
             color: #fff;
-            font-size: 2vh; /* Taille du texte ajustée à la hauteur */
+            font-size: 2.5vh;
             font-weight: bold;
             border-radius: 10px;
             text-align: center;
-            display: none; /* Cacher le résultat au départ */
+            display: none; /* Cacher le résultat par défaut */
         }
         .card {
-            width: 100%;
-            height: 100%;
+            flex: 1; /* Prend l'espace restant pour les cases */
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            width: 100%;
+            padding: 10px;
         }
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1vh; /* Espace entre les cases basé sur la hauteur */
+            gap: 5px;
             width: 100%;
-            height: 100%;
+            aspect-ratio: 1; /* La grille reste carrée */
         }
         .scratch-card {
-            width: 100%;
-            aspect-ratio: 1; /* Assure que les cases sont carrées */
             background-color: gold;
             border-radius: 10px;
             position: relative;
@@ -79,6 +71,7 @@
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            aspect-ratio: 1; /* Chaque case reste carrée */
         }
         .scratch-card:hover {
             transform: scale(1.1);
@@ -93,7 +86,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2vh; /* Texte ajusté à la hauteur */
+            font-size: 2.5vh;
             font-weight: bold;
             color: #fff;
             z-index: 1;
@@ -112,9 +105,9 @@
             background-color: #fdd835;
             border-radius: 15px;
             text-align: left;
-            font-size: 1.8vh; /* Texte adapté à la hauteur */
+            font-size: 2vh;
             font-weight: bold;
-            width: 100%;
+            width: 90%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
     </style>
@@ -123,23 +116,20 @@
     <div class="container">
         <div class="title">Carte à gratter interactive</div>
         
-        <!-- Section pour la carte -->
-        <div class="card-container">
-            <!-- Résultat affiché en haut de la carte -->
-            <div class="result" id="result"></div>
+        <!-- Résultat affiché en haut de la carte -->
+        <div class="result" id="result"></div>
 
-            <!-- La carte blanche -->
-            <div class="card">
-                <div id="grid" class="grid"></div>
-            </div>
+        <!-- La carte blanche -->
+        <div class="card">
+            <div id="grid" class="grid"></div>
+        </div>
 
-            <!-- Instructions en bas -->
-            <div class="instructions">
-                <p>✈️ x3 = Un voyage</p>
-                <p>🍽️ x3 = Un resto</p>
-                <p>💆 x3 = Un massage</p>
-                <p>🎬 x3 = Une soirée Netflix</p>
-            </div>
+        <!-- Instructions en bas -->
+        <div class="instructions">
+            <p>✈️ x3 = Un voyage</p>
+            <p>🍽️ x3 = Un resto</p>
+            <p>💆 x3 = Un massage</p>
+            <p>🎬 x3 = Une soirée Netflix</p>
         </div>
     </div>
 
