@@ -11,7 +11,7 @@
             text-align: center;
             margin: 0;
             padding: 0;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -19,16 +19,18 @@
             background-color: #f8d5e2;
         }
         .title {
-            font-size: 50px;
+            font-size: 40px;
             color: #d32f2f;
             margin-bottom: 20px;
             font-weight: bold;
+            text-align: center;
         }
         .layout {
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            gap: 40px;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
         .card-container {
             display: flex;
@@ -37,8 +39,8 @@
             gap: 20px;
         }
         .card {
-            width: 400px;
-            height: 400px;
+            width: 90%;
+            max-width: 400px;
             background-color: #fff;
             padding: 20px;
             border-radius: 15px;
@@ -50,11 +52,11 @@
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 10px;
         }
         .scratch-card {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             background-color: gold;
             border-radius: 10px;
             position: relative;
@@ -76,7 +78,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
+            font-size: 24px;
             font-weight: bold;
             color: #fff;
             z-index: 1;
@@ -92,16 +94,23 @@
         }
         .instructions {
             background-color: #fdd835;
-            padding: 10px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 15px;
             text-align: left;
-            width: 250px;
-            font-size: 16px;
+            width: 90%;
+            max-width: 250px;
+            font-size: 14px;
             font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         .buttons {
             display: flex;
-            gap: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
             margin-top: 20px;
         }
         button {
@@ -116,10 +125,44 @@
         button:hover {
             background-color: #b71c1c;
         }
+        @media (max-width: 768px) {
+            .scratch-card {
+                width: 70px;
+                height: 70px;
+            }
+            .grid {
+                gap: 8px;
+            }
+            .instructions {
+                font-size: 12px;
+            }
+            .title {
+                font-size: 30px;
+            }
+        }
+        @media (max-width: 480px) {
+            .scratch-card {
+                width: 60px;
+                height: 60px;
+            }
+            .grid {
+                gap: 6px;
+            }
+            .instructions {
+                font-size: 11px;
+            }
+            .title {
+                font-size: 25px;
+            }
+            button {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="title">ONE LIFE</div>
+    <div class="title">PIMENTONS NOTRE VIE XXX</div>
     <div class="layout">
         <div class="card-container">
             <div id="cardContainer" class="card">
@@ -154,10 +197,6 @@
             if (fixedRewards) {
                 // Charger une carte existante
                 rewardPool = decodeURIComponent(fixedRewards).split("");
-                if (!validateRewards(rewardPool)) {
-                    alert("Carte invalide, une nouvelle carte sera générée.");
-                    rewardPool = createRandomRewardPool();
-                }
             } else {
                 // Générer une nouvelle carte
                 rewardPool = createRandomRewardPool();
@@ -186,21 +225,22 @@
             return shuffleArray(rewardPool); // Mélanger
         }
 
-        function validateRewards(rewardPool) {
-            if (rewardPool.length !== 9) return false;
-            const counts = {};
-            rewards.forEach((reward) => {
-                counts[reward] = rewardPool.filter((r) => r === reward).length;
-            });
-            return Object.values(counts).includes(3) && Math.max(...Object.values(counts)) === 3;
-        }
-
         function generateShareableLink() {
             const grid = document.getElementById("grid");
             const rewards = Array.from(grid.children).map((card) => card.querySelector(".content").textContent);
             const encodedRewards = encodeURIComponent(rewards.join(""));
             const shareableUrl = `${window.location.origin}${window.location.pathname}?rewards=${encodedRewards}`;
             prompt("Voici le lien pour partager cette carte :", shareableUrl);
+        }
+
+        function downloadCard() {
+            const cardContainer = document.getElementById("cardContainer");
+            html2canvas(cardContainer, { backgroundColor: null }).then((canvas) => {
+                const link = document.createElement("a");
+                link.download = "carte-a-gratter.png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
         }
 
         // Fonction pour mélanger un tableau
@@ -217,16 +257,6 @@
             hiddenLayer.style.transition = "opacity 0.5s";
             hiddenLayer.style.opacity = 0;
             setTimeout(() => hiddenLayer.remove(), 500);
-        }
-
-        function downloadCard() {
-            const cardContainer = document.getElementById("cardContainer");
-            html2canvas(cardContainer).then((canvas) => {
-                const link = document.createElement("a");
-                link.download = "carte-a-gratter.png";
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-            });
         }
 
         // Générer une nouvelle combinaison au chargement de la page
