@@ -35,7 +35,7 @@
         }
         .layout {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: flex-start;
             gap: 20px;
             flex-wrap: wrap;
@@ -108,17 +108,16 @@
             align-items: center;
         }
         .result {
-            background-color: #4caf50;
-            color: #fff;
+            margin-top: 20px;
             padding: 20px;
-            border-radius: 15px;
-            text-align: center;
+            background: #fff;
+            color: #4CAF50;
             font-size: 18px;
             font-weight: bold;
-            min-width: 200px;
+            border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        .result.hidden {
+        .hidden-result {
             display: none;
         }
     </style>
@@ -126,31 +125,20 @@
 <body>
     <div class="title">Carte à gratter interactive</div>
     
-    <!-- Formulaire pour les légendes -->
-    <div class="form-container" id="formContainer">
-        <h3>Personnalisez les légendes :</h3>
-        <label for="legend-plane">✈️ Légende pour "Avion" :</label>
-        <input type="text" id="legend-plane" placeholder="Ex : Un voyage inoubliable">
-        <label for="legend-restaurant">🍽️ Légende pour "Resto" :</label>
-        <input type="text" id="legend-restaurant" placeholder="Ex : Un dîner romantique">
-        <label for="legend-massage">💆 Légende pour "Massage" :</label>
-        <input type="text" id="legend-massage" placeholder="Ex : Une séance détente">
-        <label for="legend-movie">🎬 Légende pour "Soirée Netflix" :</label>
-        <input type="text" id="legend-movie" placeholder="Ex : Une soirée cosy">
-        <button onclick="generateCard()">Afficher la carte</button>
-    </div>
-    
     <!-- Section pour la carte -->
-    <div class="card-container" id="cardContainer" style="display: none;">
+    <div class="card-container">
         <div class="layout">
             <div class="card">
                 <div id="grid" class="grid"></div>
             </div>
-            <div>
-                <div class="instructions" id="instructions"></div>
-                <div class="result hidden" id="result"></div>
+            <div class="instructions">
+                <p>✈️ x3 = Un voyage</p>
+                <p>🍽️ x3 = Un resto</p>
+                <p>💆 x3 = Un massage</p>
+                <p>🎬 x3 = Une soirée Netflix</p>
             </div>
         </div>
+        <div class="result hidden-result" id="result"></div>
     </div>
 
     <script>
@@ -158,33 +146,9 @@
         let revealedCards = 0; // Compte des cases grattées
         let rewardCounts = {}; // Compte des récompenses visibles
 
-        function generateCard() {
-            // Récupérer les légendes depuis le formulaire
-            const legendPlane = document.getElementById("legend-plane").value || "Un voyage";
-            const legendRestaurant = document.getElementById("legend-restaurant").value || "Un resto";
-            const legendMassage = document.getElementById("legend-massage").value || "Un massage";
-            const legendMovie = document.getElementById("legend-movie").value || "Une soirée Netflix";
-
-            // Mettre à jour les légendes
-            const legends = {
-                "✈️": legendPlane,
-                "🍽️": legendRestaurant,
-                "💆": legendMassage,
-                "🎬": legendMovie
-            };
-
-            // Afficher la carte
-            document.getElementById("formContainer").style.display = "none";
-            document.getElementById("cardContainer").style.display = "block";
-
-            // Générer les cases et la légende
-            generateGrid();
-            generateLegend(legends);
-        }
-
-        function generateGrid() {
+        function generateRandomRewards() {
             const grid = document.getElementById("grid");
-            grid.innerHTML = ""; // Réinitialiser la grille
+            grid.innerHTML = ""; // Réinitialise la grille
             revealedCards = 0;
             rewardCounts = {};
 
@@ -209,16 +173,6 @@
             return shuffleArray(rewardPool); // Mélanger
         }
 
-        function generateLegend(legends) {
-            const instructions = document.getElementById("instructions");
-            instructions.innerHTML = ""; // Réinitialiser les légendes
-            rewards.forEach((reward) => {
-                const legendText = document.createElement("p");
-                legendText.innerHTML = `${reward} x3 = ${legends[reward]}`;
-                instructions.appendChild(legendText);
-            });
-        }
-
         function scratchCardReveal(card, reward) {
             const hiddenLayer = card.querySelector(".hidden");
             if (hiddenLayer) {
@@ -238,12 +192,12 @@
 
         function displayResult() {
             const resultContainer = document.getElementById("result");
-            resultContainer.classList.remove("hidden");
+            resultContainer.classList.remove("hidden-result");
 
             // Trouver le gagnant
             const winner = Object.entries(rewardCounts).find(([reward, count]) => count === 3);
             if (winner) {
-                resultContainer.textContent = `🎉 Le gagnant est : ${winner[0]} !`;
+                resultContainer.textContent = `🎉 Le gagnant est : ${winner[0]} avec ${winner[1]} occurrences !`;
             } else {
                 resultContainer.textContent = "Aucun gagnant trouvé. Essayez une nouvelle carte !";
             }
@@ -256,6 +210,9 @@
             }
             return array;
         }
+
+        // Générer une nouvelle combinaison au chargement de la page
+        window.onload = generateRandomRewards;
     </script>
 </body>
 </html>
